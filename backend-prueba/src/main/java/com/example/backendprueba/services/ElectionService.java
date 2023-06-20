@@ -1,6 +1,7 @@
 package com.example.backendprueba.services;
 
 import com.example.backendprueba.models.Election;
+import com.example.backendprueba.models.ElectionData;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +33,54 @@ try {
             database.update(statement);
             database.closeConnection();
             return election;
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		return null;
+	}
+	
+	public List<ElectionData> save(List<ElectionData> electionsData) {
+		// TODO Auto-generated method stub
+try {
+	        ConnectionDatabase database = new ConnectionDatabase();
+			PreparedStatement statement = database.getPreparedStatement
+					("INSERT INTO Election ( year, vote_count, political_party, code_county) VALUES (?, ?, ?, ?)");
+			
+			for(ElectionData election : electionsData) {
+				
+				statement.setInt(1, election.getYear());
+				statement.setLong(2, election.getDemocrat());
+	            
+	            statement.setString(3, "Democract");
+	            statement.setString(4, election.getCodecounty());
+	            statement.addBatch();
+	            
+	            statement.setInt(1, election.getYear());
+				statement.setLong(2, election.getRepublic());
+	            
+	            statement.setString(3, "Republic");
+	            statement.setString(4, election.getCodecounty());
+	            statement.addBatch();
+	            
+	            statement.setInt(1, election.getYear());
+				statement.setLong(2, election.getOther());
+	            
+	            statement.setString(3, "Other");
+	            statement.setString(4, election.getCodecounty());
+	            statement.addBatch();
+	            
+	            
+
+			}
+
+            
+            database.updateBatch(statement);
+            database.closeConnection();
+            return electionsData;
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

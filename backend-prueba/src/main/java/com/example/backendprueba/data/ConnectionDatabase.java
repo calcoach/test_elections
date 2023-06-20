@@ -26,8 +26,8 @@ public class ConnectionDatabase {
 		
 			try {
 			    conn =
-			       DriverManager.getConnection("jdbc:mysql://bov4d773viiup3kc2hkc-mysql.services.clever-cloud.com:3306/bov4d773viiup3kc2hkc?" +
-			                                   "user=uprvwkbvqd5vcyvl&password=OFCOJUPw1Hd6PJ7NF26U");
+			       DriverManager.getConnection("jdbc:mysql://localhost:3306/db_elections?" +
+			                                   "user=root&password=12345");
 
 			    // Do something with the Connection
 			    System.out.println("CONECTADO A LA DATABASE");
@@ -120,6 +120,18 @@ public class ConnectionDatabase {
 	            pst.executeUpdate();
 	            this.closeConnection();
 	            System.out.println("Data inserted successfully into Election table.");
+	        } catch (SQLException e) {
+	            System.out.println("Error while inserting data into Election table: " + e.getMessage());
+	        }
+	}
+	
+	public void updateBatch(PreparedStatement pst) {
+		
+		 try  {
+	            pst.executeBatch();
+
+	            this.closeConnection();
+	            System.out.println("Data batch Eletion successfully into Election table.");
 	        } catch (SQLException e) {
 	            System.out.println("Error while inserting data into Election table: " + e.getMessage());
 	        }

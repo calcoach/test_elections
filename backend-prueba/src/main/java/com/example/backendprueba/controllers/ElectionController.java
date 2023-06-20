@@ -23,7 +23,7 @@ import com.example.backendprueba.services.ICrudService;
 public class ElectionController {
 	
 	@Autowired
-	ICrudService<Election> electionService;
+	ElectionService electionService;
 
 	@PostMapping("/election")
 	@ResponseStatus(value = HttpStatus.CREATED)
@@ -44,11 +44,7 @@ public class ElectionController {
 	@PostMapping("/electiondata")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public List<ElectionData> createElectionData(@RequestBody List<ElectionData> electionsData) {
-		for(ElectionData election : electionsData) {
-			electionService.save(new Election(election.getYear(), election.getDemocrat(), "Democract", election.getCodecounty()));
-			electionService.save(new Election(election.getYear(), election.getRepublic(), "Republic", election.getCodecounty()));
-			electionService.save(new Election(election.getYear(), election.getOther(), "Other", election.getCodecounty()));
-		}
+		this.electionService.save(electionsData);
 		
 		return electionsData;
 	}

@@ -2,23 +2,23 @@ package com.example.backendprueba.models;
 
 public class CountyData {
 
-	private String codecounty;
+	private long codecounty;
 	private String county;
 	private long population;
 	private long area;
 	
 	
-	public CountyData(String codecounty, String county, long population, long area) {
+	public CountyData(long codecounty, String county, long population, long area) {
 		super();
 		this.codecounty = codecounty;
 		this.county = county;
 		this.population = population;
 		this.area = area;
 	}
-	public String getCodecounty() {
+	public long getCodecounty() {
 		return codecounty;
 	}
-	public void setCodecounty(String codecounty) {
+	public void setCodecounty(long codecounty) {
 		this.codecounty = codecounty;
 	}
 	public String getCounty() {

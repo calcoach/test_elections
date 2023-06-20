@@ -15,6 +15,7 @@ import com.example.backendprueba.models.County;
 import com.example.backendprueba.models.CountyData;
 import com.example.backendprueba.models.Election;
 import com.example.backendprueba.models.ElectionData;
+import com.example.backendprueba.services.CountyService;
 import com.example.backendprueba.services.ICrudService;
 
 @RestController
@@ -22,7 +23,7 @@ import com.example.backendprueba.services.ICrudService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CountyController {
 	@Autowired
-	ICrudService<County> electionService;
+	CountyService electionService;
 
 	@PostMapping("/county")
 	@ResponseStatus(value = HttpStatus.CREATED)
@@ -34,12 +35,8 @@ public class CountyController {
 	@PostMapping("/countydata")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public List<CountyData> createElectionData(@RequestBody List<CountyData> electionsData) {
-		for(CountyData county : electionsData) {
-			electionService.save(new County(county.getCodecounty(), county.getCounty(), county.getPopulation(),
-					county.getArea()));
-			
-		}
-		
+			electionService.save((List<CountyData>) electionsData);
+	
 		return electionsData;
 	}
 	

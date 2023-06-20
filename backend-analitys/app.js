@@ -26,11 +26,12 @@ app.get('/', function(req,res){
     res.send('Ruta INICIO')
 })
 //Consultar todos los platillos
-app.get('/api/platillos', (req,res)=>{
-    conexion.query('SELECT * FROM platillos', (error,filas)=>{
+app.get('/api/morevotes', (req,res)=>{
+    conexion.query('SELECT  e.year FROM election e group by e.year order by sum(e.vote_count) desc limit 1', (error,filas)=>{
         if(error){
             throw error
         }else{
+            console.log(filas);
             res.send(filas)
         }
     })

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backendprueba.data.ConnectionDatabase;
@@ -18,8 +19,7 @@ public class ElectionService implements ICrudService<Election> {
 	public Election save(Election election) {
 		// TODO Auto-generated method stub
 try {
-			
-			ConnectionDatabase database = new ConnectionDatabase();
+	        ConnectionDatabase database = new ConnectionDatabase();
 			PreparedStatement statement = database.getPreparedStatement
 					("INSERT INTO Election ( year, vote_count, political_party, code_county) VALUES (?, ?, ?, ?)");
 			
@@ -30,6 +30,7 @@ try {
             statement.setString(4, election.getCodecounty());
             
             database.update(statement);
+            database.closeConnection();
             return election;
 		
 		} catch (SQLException e) {
@@ -47,6 +48,7 @@ try {
 		
 
 		try {
+			
 			ConnectionDatabase database = new ConnectionDatabase();
 			ResultSet rs = database.executeQuery("SELECT * FROM alumno");
 			

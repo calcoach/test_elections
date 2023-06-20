@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.SQLType;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backendprueba.data.ConnectionDatabase;
@@ -15,7 +16,7 @@ import com.example.backendprueba.models.Login;
 
 @Service
 public class CoordinatorService implements ICrudService<Coordinator> {
-
+	
 	@Override
 	public List<Coordinator> getAll() {
 		// TODO Auto-generated method stub
@@ -44,6 +45,7 @@ public class CoordinatorService implements ICrudService<Coordinator> {
             statement.setString(4, coordinator.getPassword());
             
             database.update(statement);
+            database.closeConnection();
             return coordinator;
 		
 		} catch (SQLException e) {
@@ -68,10 +70,12 @@ public class CoordinatorService implements ICrudService<Coordinator> {
 	
 	public Coordinator checkCredentials(Login login) {
 		// TODO Auto-generated method stub
+		
 		String query = "SELECT * FROM coordinator WHERE email =\'"+login.getEmail()+"\' AND password=\'"+login.getPassword()+"\';";
 		
 		try {
 			ConnectionDatabase database = new ConnectionDatabase();
+			
 			ResultSet rs = database.executeQuery(query);
 			
 			if(rs!=null) {
@@ -82,6 +86,7 @@ public class CoordinatorService implements ICrudService<Coordinator> {
 					coordinator.setDocument((long)rs.getObject("document"));
 					coordinator.setEmail(rs.getString("email"));
 					coordinator.setPassword(rs.getString("password"));
+					database.closeConnection();
 					
 					return coordinator;
 				}

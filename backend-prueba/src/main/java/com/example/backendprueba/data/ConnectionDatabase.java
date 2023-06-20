@@ -11,24 +11,23 @@ public class ConnectionDatabase {
 	
 	Statement stmt;
 	ResultSet rs;
-	Connection conn;
+	static Connection conn = connect();
 	
 	
 	public ConnectionDatabase() throws SQLException {
 		this.stmt = null;
 		this.rs = null;
-		this.conn = null;
 	}
 	
 
-	public  Connection connect() {
+	public static Connection connect() {
 		//LoadDriver.load();
 		
 		
 			try {
-			    this.conn =
-			       DriverManager.getConnection("jdbc:mysql://localhost/db_elections?" +
-			                                   "user=root&password=12345");
+			    conn =
+			       DriverManager.getConnection("jdbc:mysql://bov4d773viiup3kc2hkc-mysql.services.clever-cloud.com:3306/bov4d773viiup3kc2hkc?" +
+			                                   "user=uprvwkbvqd5vcyvl&password=OFCOJUPw1Hd6PJ7NF26U");
 
 			    // Do something with the Connection
 			    System.out.println("CONECTADO A LA DATABASE");
@@ -41,10 +40,14 @@ public class ConnectionDatabase {
 			    System.out.println("VendorError: " + ex.getErrorCode());
 			}
 			
-			return this.conn;
+			return conn;
 			
 		
 	}	
+	
+	public void newConnect() {
+		this.conn = connect();
+	}
 	
 	public void closeConnection() throws SQLException {
 		
@@ -53,15 +56,13 @@ public class ConnectionDatabase {
 			 
 			this.stmt.close();
 			
-			this.conn.close();
+			//this.conn.close();
 			System.out.println("CONECCION CERADA");
 		}
 	    
 	}
 	
 	public ResultSet executeQuery(String query) {
-		
-		Connection conn = this.connect();
 
 		try {
 			this.stmt = conn.createStatement();
@@ -90,13 +91,12 @@ public class ConnectionDatabase {
 	}
 	
 	public void executeUpdate(String sql) {
-		Connection conn = this.connect();
 		try {
 			  //stmt = conn.prepareStatement();  
 			  stmt = conn.createStatement();
 
 			  stmt.execute(sql); 
-			  stmt.close();	           
+			  this.closeConnection();
 			} catch (SQLException sqle) { 
 			  System.out.println("Error en la ejecución: " 
 			    + sqle.getErrorCode() + " " + sqle.getMessage());    
@@ -104,7 +104,6 @@ public class ConnectionDatabase {
 	}
 	
 	 public PreparedStatement getPreparedStatement(String query) throws SQLException {
-		 this.conn = this.connect();
 		 try {
 
 			 PreparedStatement statement = conn.prepareStatement(query);
@@ -120,9 +119,9 @@ public class ConnectionDatabase {
 		 try  {
 	            pst.executeUpdate();
 	            this.closeConnection();
-	            System.out.println("Data inserted successfully into County table.");
+	            System.out.println("Data inserted successfully into Election table.");
 	        } catch (SQLException e) {
-	            System.out.println("Error while inserting data into County table: " + e.getMessage());
+	            System.out.println("Error while inserting data into Election table: " + e.getMessage());
 	        }
 	}
 	

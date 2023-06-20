@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import com.example.backendprueba.data.ConnectionDatabase;
 
 public class Config {
+	static String sqldropTableElection = "DROP TABLE IF EXISTS Election;";
+	static String sqldropTableCounty = "DROP TABLE IF EXISTS County;";
+	static String sqldropTableCoordinator = "DROP TABLE IF EXISTS Coordinator;";
+	
 	static String sqlTableElection = "CREATE TABLE IF NOT EXISTS Election (\r\n"
 			+ "  id_election SERIAL PRIMARY KEY,\r\n"
 			+ "  year INT,\r\n"
@@ -35,9 +39,13 @@ public class Config {
 	public static void config() {
 		try {
 			ConnectionDatabase database = new ConnectionDatabase();
+			database.executeUpdate(sqldropTableElection);
+			database.executeUpdate(sqldropTableCounty);
+			database.executeUpdate(sqldropTableCoordinator);
 			database.executeUpdate(sqlTableElection);
 			database.executeUpdate(sqlTableCounty);
 			database.executeUpdate(sqlTableCoordinator);
+			database.closeConnection();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

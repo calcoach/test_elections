@@ -25,20 +25,33 @@ conexion.connect(function(error){
 app.get('/', function(req,res){
     res.send('Ruta INICIO')
 })
-//Consultar todos los platillos
+//Consultar el año con mas votos los platillos
 app.get('/api/morevotes', (req,res)=>{
-    conexion.query('SELECT  e.year FROM election e group by e.year order by sum(e.vote_count) desc limit 1', (error,filas)=>{
+    conexion.query('SELECT  e.year FROM election e group by e.year order by sum(e.vote_count) desc limit 1', (error,fila)=>{
         if(error){
             throw error
         }else{
-            console.log(filas);
-            res.send(filas)
+            console.log(fila);
+            res.send(fila)
+        }
+    })
+})
+
+app.get('/api/minusvotesyear', (req,res)=>{
+    conexion.query('SELECT  e.year FROM election e where e.year between 2012 AND 2016 group by e.year order by sum(e.vote_count) asc limit 1;', 
+    (error,fila)=>{
+        if(error){
+            throw error
+        }else{
+            console.log(fila);
+            res.send(fila)
         }
     })
 })
 //Buscar platillo por id
-app.get('/api/platillos/:id', (req,res)=>{
-    conexion.query('SELECT * FROM platillos WHERE idplatillo = ?', [req.params.id], (error, fila)=>{
+app.get('/api/minusvotes', (req,res)=>{
+    conexion.query("select county from county c join (SELECT sum(e.vote_count) votos, e.code_county FROM election e group by e.code_county order by votos desc limit 1) county_more_votes on c.code_county =  county_more_votes.code_county", 
+    (error, fila)=>{
         if(error){
             throw error
         }else{
@@ -46,45 +59,42 @@ app.get('/api/platillos/:id', (req,res)=>{
         }
     })
 })
-//Crear un platillo
-app.post('/api/platillos', (req,res)=>{
-    let data = {descripcion:req.body.descripcion, precio:req.body.precio, stock:req.body.stock}
-    let sql = "INSERT INTO platillos SET ?"
-    conexion.query(sql, data, function(err, result){
-            if(err){
-               throw err
-            }else{
-             /*Esto es lo nuevo que agregamos para el CRUD con Javascript*/
-             Object.assign(data, {id: result.insertId }) //agregamos el ID al objeto data
-             res.send(data) //enviamos los valores
-        }
-    })
-})
-//Editar un platillo
-app.put('/api/platillos/:id', (req, res)=>{
-    let id = req.params.id
-    let descripcion = req.body.descripcion
-    let precio = req.body.precio
-    let stock = req.body.stock
-    let sql = "UPDATE platillos SET nameplatillo = ?, precio = ?, ingredientes = ?, tiempopreparacion WHERE id = ?"
-    conexion.query(sql, [descripcion, precio, stock, id], function(error, results){
+
+
+app.get('/api/democractmorevotes', (req,res)=>{
+    conexion.query("select county from county c join (SELECT sum(e.vote_count) votos, e.code_county FROM election e where e.political_party = 'Democract' AND e.year between 2000 AND 2016 group by e.code_county order by votos desc limit 3) county_more_votes on c.code_county =  county_more_votes.code_county", 
+    (error, fila)=>{
         if(error){
             throw error
         }else{
-            res.send(results)
+            res.send(fila)
         }
     })
 })
-//Eliminar un platillo
-app.delete('/api/platillos/:id', (req,res)=>{
-    conexion.query('DELETE FROM platillos WHERE id = ?', [req.params.id], function(error, filas){
+
+app.get('/api/partymorevotes', (req,res)=>{
+    conexion.query("SELECT sum(e.vote_count) votos, e.political_party FROM election e where e.year between 2000 AND 2016 group by e.political_party order by votos desc limit 1", 
+    (error, fila)=>{
         if(error){
             throw error
         }else{
-            res.send(filas)
+            res.send(fila)
         }
     })
 })
+
+app.get('/api/votesbyyearandpoliticalparty', (req,res)=>{
+    conexion.query("SELECT e.year, e.political_party, sum(e.vote_count) votos FROM election e group by e.year, e.political_party", 
+    (error, fila)=>{
+        if(error){
+            throw error
+        }else{
+            res.send(fila)
+        }
+    })
+})
+
+
 const puerto = process.env.PUERTO || 5000
 app.listen(puerto, function(){
     console.log("Servidor Ok en puerto:"+puerto)
